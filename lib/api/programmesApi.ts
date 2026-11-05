@@ -1,13 +1,17 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
 import type {
   Programme,
   ProgrammeFilters,
-  PaginatedResponse,
   ProgrammeCreateInput,
   ProgrammeUpdateInput,
+  ApiError,
 } from "@/types/index";
+
+type ProgrammesResult = { data: Programme[] | null; error: ApiError | null };
+type ProgrammeResult = { data: Programme | null; error: ApiError | null };
+type BooleanResult = { data: boolean | null; error: ApiError | null };
+type SavedResult = { data: any | null; error: ApiError | null };
 
 // TEMPORARY MOCK — replace with real backend calls once endpoints are confirmed.
 // This block lets the frontend run against real-looking data before the API is ready.
@@ -118,44 +122,11 @@ const MOCK_PROGRAMMES: Programme[] = [
   },
 ];
 
-const MOCK_PROVIDERS = [
-  {
-    id: "prov-1",
-    user_id: "user-1",
-    name: "TechBridge Academy",
-    description: "Practical tech courses for career changers.",
-    website: "https://techbridge.example",
-    logo_url: null,
-    contact_email: "hello@techbridge.example",
-    created_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "prov-2",
-    user_id: "user-2",
-    name: "Design Hub",
-    description: "Creative design training led by industry professionals.",
-    website: "https://designhub.example",
-    logo_url: null,
-    contact_email: "contact@designhub.example",
-    created_at: "2026-01-15T00:00:00Z",
-  },
-  {
-    id: "prov-3",
-    user_id: "user-3",
-    name: "Growth School",
-    description: "Modern marketing for the digital age.",
-    website: "https://growth.example",
-    logo_url: null,
-    contact_email: "team@growth.example",
-    created_at: "2026-02-01T00:00:00Z",
-  },
-];
-
 let nextId = 100;
 
 export async function listProgrammes(
   filters: ProgrammeFilters = {}
-): Promise<{ data: Programme[] | null; error: any }> {
+): Promise<ProgrammesResult> {
   // TEMPORARY MOCK — replace with GET /programmes
   await new Promise((r) => setTimeout(r, 300));
   let result = [...MOCK_PROGRAMMES].filter((p) => p.status === "published");
@@ -193,15 +164,12 @@ export async function listProgrammes(
   const start = (page - 1) * limit;
   const pageData = result.slice(start, start + limit);
 
-  return {
-    data: pageData,
-    error: null,
-  };
+  return { data: pageData, error: null };
 }
 
 export async function getProgramme(
   id: string
-): Promise<{ data: Programme | null; error: any }> {
+): Promise<ProgrammeResult> {
   // TEMPORARY MOCK — replace with GET /programmes/:id
   await new Promise((r) => setTimeout(r, 200));
   const prog = MOCK_PROGRAMMES.find((p) => p.id === id);
@@ -210,7 +178,7 @@ export async function getProgramme(
 
 export async function createProgramme(
   input: ProgrammeCreateInput
-): Promise<{ data: Programme | null; error: any }> {
+): Promise<ProgrammeResult> {
   // TEMPORARY MOCK — replace with POST /programmes
   await new Promise((r) => setTimeout(r, 300));
   const prog: Programme = {
@@ -235,18 +203,17 @@ export async function createProgramme(
 export async function updateProgramme(
   id: string,
   input: ProgrammeUpdateInput
-): Promise<{ data: Programme | null; error: any }> {
+): Promise<ProgrammeResult> {
   // TEMPORARY MOCK — replace with PATCH /programmes/:id
   await new Promise((r) => setTimeout(r, 300));
   const existing = MOCK_PROGRAMMES.find((p) => p.id === id);
-  if (!existing) return { data: null, error: { message: "Programme not found" } };
+  if (!existing)
+    return { data: null, error: { message: "Programme not found" } };
   const updated = { ...existing, ...input, updated_at: new Date().toISOString() };
   return { data: updated, error: null };
 }
 
-export async function deleteProgramme(
-  id: string
-): Promise<{ data: boolean | null; error: any }> {
+export async function deleteProgramme(id: string): Promise<BooleanResult> {
   // TEMPORARY MOCK — replace with DELETE /programmes/:id
   await new Promise((r) => setTimeout(r, 300));
   return { data: true, error: null };
@@ -254,7 +221,7 @@ export async function deleteProgramme(
 
 export async function saveProgramme(
   programmeId: string
-): Promise<{ data: any | null; error: any }> {
+): Promise<SavedResult> {
   // TEMPORARY MOCK — replace with POST /programmes/:id/save
   await new Promise((r) => setTimeout(r, 200));
   return { data: { id: "saved-1", programme_id: programmeId }, error: null };
@@ -262,16 +229,13 @@ export async function saveProgramme(
 
 export async function unsaveProgramme(
   programmeId: string
-): Promise<{ data: boolean | null; error: any }> {
+): Promise<BooleanResult> {
   // TEMPORARY MOCK — replace with DELETE /programmes/:id/save
   await new Promise((r) => setTimeout(r, 200));
   return { data: true, error: null };
 }
 
-export async function listSavedProgrammes(): Promise<{
-  data: Programme[] | null;
-  error: any;
-}> {
+export async function listSavedProgrammes(): Promise<ProgrammesResult> {
   // TEMPORARY MOCK — replace with GET /me/saved
   await new Promise((r) => setTimeout(r, 300));
   return { data: MOCK_PROGRAMMES.slice(0, 2), error: null };

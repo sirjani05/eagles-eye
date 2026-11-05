@@ -1,7 +1,9 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
-import type { Provider } from "@/types/index";
+import type { Provider, ApiError } from "@/types/index";
+
+type ProvidersResult = { data: Provider[] | null; error: ApiError | null };
+type ProviderResult = { data: Provider | null; error: ApiError | null };
 
 // TEMPORARY MOCK — replace with real backend calls once endpoints are confirmed.
 const MOCK_PROVIDERS: Provider[] = [
@@ -37,18 +39,13 @@ const MOCK_PROVIDERS: Provider[] = [
   },
 ];
 
-export async function listProviders(): Promise<{
-  data: Provider[] | null;
-  error: any;
-}> {
+export async function listProviders(): Promise<ProvidersResult> {
   // TEMPORARY MOCK — replace with GET /providers
   await new Promise((r) => setTimeout(r, 200));
   return { data: MOCK_PROVIDERS, error: null };
 }
 
-export async function getProvider(
-  id: string
-): Promise<{ data: Provider | null; error: any }> {
+export async function getProvider(id: string): Promise<ProviderResult> {
   // TEMPORARY MOCK — replace with GET /providers/:id
   await new Promise((r) => setTimeout(r, 200));
   const provider = MOCK_PROVIDERS.find((p) => p.id === id);
@@ -57,7 +54,7 @@ export async function getProvider(
 
 export async function getProviderProgrammes(
   providerId: string
-): Promise<{ data: any[] | null; error: any }> {
+): Promise<{ data: any[] | null; error: ApiError | null }> {
   // TEMPORARY MOCK — replace with GET /providers/:id/programmes
   await new Promise((r) => setTimeout(r, 200));
   return { data: [], error: null };
