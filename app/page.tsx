@@ -1,69 +1,109 @@
-import Image from "next/image";
+import Link from "next/link";
+import { listProgrammes } from "@/lib/api/programmesApi";
+import { ProgrammeCard } from "@/components/programmes/ProgrammeCard";
+import { Button } from "@/components/ui/Button";
 
-export default function Home() {
+const CATEGORIES = [
+  "Data & Analytics",
+  "Design",
+  "Engineering",
+  "Marketing",
+];
+
+export default async function Landing() {
+  const { data: programmes, error } = await listProgrammes({
+    limit: 6,
+  });
+
+  const featured = (programmes ?? []).slice(0, 3);
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <h1 className="text-3xl font-bold mb-6">Eagle&apos;s Eye</h1>
+        <p className="text-destructive mb-6">Unable to load programmes. Please try again later.</p>
+        <Button asChild>
+          <Link href="/programmes">Browse Programmes</Link>
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="min-h-screen flex flex-col">
+      <section className="bg-primary text-primary-foreground py-20 px-4 overflow-hidden">
+        <div className="container mx-auto relative z-10 text-center max-w-3xl">
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+            Discover your next learning journey
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-primary/90 mb-8 max-w-2xl mx-auto">
+            Find and compare education programmes from top providers. Whether
+            you&apos;re starting a new career or advancing your skills, we help
+            you find the right programme.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <Link href="/programmes">Browse programmes</Link>
+            </Button>
+            <Button variant="outline" asChild size="lg" className="w-full sm:w-auto">
+              <a href="/register">Join as a learner</a>
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold">Featured programmes</h2>
+              <p className="text-muted-foreground">Popular programmes to get you started</p>
+            </div>
+            <Link
+              href="/programmes"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              View all
+            </Link>
+          </div>
+          {featured.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">
+              No featured programmes available at the moment.
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-6">
+              {featured.map((prog) => (
+                <ProgrammeCard key={prog.id} programme={prog} />
+              ))}
+            </div>
+          )}
         </div>
-      </main>
+      </section>
+
+      <section className="py-16 px-4 bg-muted/50">
+        <div className="container mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4">Trusted by leading providers</h2>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale">
+            {CATEGORIES.map((cat) => (
+              <span key={cat} className="text-sm font-medium tracking-wider uppercase">
+                {cat}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 px-4">
+        <div className="container mx-auto text-center max-w-2xl">
+          <h2 className="text-2xl font-bold mb-6">Ready to find your programme?</h2>
+          <p className="text-muted-foreground mb-8">
+            Browse our catalogue and save programmes that interest you.
+          </p>
+          <Link href="/programmes">
+            <Button size="lg">Browse all programmes</Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
