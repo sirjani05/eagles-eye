@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useAuth } from "@/components/layout/AuthProvider";
+import { useState } from "react";
 import { createProgramme, updateProgramme, deleteProgramme } from "@/lib/api/programmesApi";
 import type { ProgrammeCreateInput, ProgrammeUpdateInput } from "@/types/index";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import Link from "next/link";
 
 const MODES = [
@@ -15,8 +13,21 @@ const MODES = [
   { value: "hybrid", label: "Hybrid" },
 ];
 
+type ModeValue = "online" | "in-person" | "hybrid";
+
 interface ProgrammeFormProps {
-  initial?: { title: string; description?: string; category?: string; level?: string; duration?: string; cost?: number; currency?: string; location?: string; mode?: string; status?: string };
+  initial?: {
+    title: string;
+    description?: string;
+    category?: string;
+    level?: string;
+    duration?: string;
+    cost?: number;
+    currency?: string;
+    location?: string;
+    mode?: string;
+    status?: string;
+  };
   onSuccess: () => void;
   isEdit?: boolean;
   programmeId?: string;
@@ -37,12 +48,10 @@ export function ProgrammeForm({
     cost: String(initial?.cost ?? ""),
     currency: initial?.currency ?? "GBP",
     location: initial?.location ?? "",
-    mode: initial?.mode ?? "online",
+    mode: (initial?.mode as ModeValue) ?? "online",
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const { user } = useAuth();
 
   const handleChange = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -63,7 +72,7 @@ export function ProgrammeForm({
       cost: form.cost ? Number(form.cost) : undefined,
       currency: form.currency || undefined,
       location: form.location || undefined,
-      mode: form.mode as any,
+      mode: form.mode as ModeValue,
     };
 
     try {
@@ -77,7 +86,7 @@ export function ProgrammeForm({
           cost: form.cost ? Number(form.cost) : undefined,
           currency: form.currency || undefined,
           location: form.location || undefined,
-          mode: form.mode as any,
+          mode: form.mode as ModeValue,
         };
         const { error: err } = await updateProgramme(programmeId, updateInput);
         if (err) throw new Error(err.message);

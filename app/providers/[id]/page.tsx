@@ -1,10 +1,9 @@
 import { getProvider } from "@/lib/api/providersApi";
 import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Link from "next/link";
 
 export async function generateMetadata({
-  params,
+  params: _params,
 }: {
   params: Promise<{ id: string }>;
 }) {

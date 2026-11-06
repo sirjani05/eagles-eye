@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
 export async function generateMetadata({
-  params,
+  params: _params,
 }: {
   params: Promise<{ slug: string }>;
 }) {

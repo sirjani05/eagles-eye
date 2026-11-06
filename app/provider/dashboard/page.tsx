@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@/components/layout/AuthProvider";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
 export default function ProviderDashboardPage() {
-  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

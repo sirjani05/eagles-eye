@@ -70,12 +70,17 @@ export async function getUser(): Promise<AuthResult> {
 }
 
 function mapUser(
-  u: { id: string; email: string; user_metadata?: Record<string, unknown> | null; created_at: string }
+  u: {
+    id: string;
+    email?: string | null;
+    user_metadata?: Record<string, unknown> | null;
+    created_at: string;
+  }
 ): User {
   const meta = u.user_metadata ?? {};
   return {
     id: u.id,
-    email: u.email,
+    email: u.email ?? "",
     full_name: (meta.full_name as string | undefined) ?? null,
     role: ((meta.role as UserRole) || "learner"),
     avatar_url: (meta.avatar_url as string | undefined) ?? null,

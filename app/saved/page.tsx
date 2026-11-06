@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@/components/layout/AuthProvider";
 import { listSavedProgrammes, unsaveProgramme } from "@/lib/api/programmesApi";
 import type { Programme } from "@/types/index";
-import { ProgrammeCard } from "@/components/programmes/ProgrammeCard";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardTitle } from "@/components/ui/Card";
 import Link from "next/link";
 
 export default function SavedPage() {
-  const { user } = useAuth();
   const [programmes, setProgrammes] = useState<Programme[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

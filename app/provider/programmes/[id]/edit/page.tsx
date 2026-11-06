@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { getProgramme, updateProgramme } from "@/lib/api/programmesApi";
+import { getProgramme } from "@/lib/api/programmesApi";
 import { ProgrammeForm } from "@/components/programmes/ProgrammeForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -86,14 +86,14 @@ export default function EditProgrammePage() {
               <ProgrammeForm
                 initial={{
                   title: programme.title,
-                  description: programme.description,
-                  category: programme.category,
-                  level: programme.level,
-                  duration: programme.duration,
-                  cost: programme.cost,
-                  currency: programme.currency,
-                  location: programme.location,
-                  mode: programme.mode,
+                  description: programme.description ?? undefined,
+                  category: programme.category ?? undefined,
+                  level: programme.level ?? undefined,
+                  duration: programme.duration ?? undefined,
+                  cost: programme.cost ?? undefined,
+                  currency: programme.currency ?? "GBP",
+                  location: programme.location ?? undefined,
+                  mode: programme.mode ?? "online",
                   status: programme.status,
                 }}
                 programmeId={programme.id}

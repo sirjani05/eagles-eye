@@ -1,3 +1,5 @@
+"use client";
+
 export function Footer() {
   return (
     <footer className="border-t mt-auto pt-8 pb-12 text-xs text-muted-foreground">
