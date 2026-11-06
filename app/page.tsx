@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { listProgrammes } from "@/lib/api/programmesApi";
 import { ProgrammeCard } from "@/components/programmes/ProgrammeCard";
@@ -10,18 +13,52 @@ const CATEGORIES = [
   "Marketing",
 ];
 
-export default async function Landing() {
-  const { data: programmes, error } = await listProgrammes({
-    limit: 6,
-  });
+export default function Landing() {
+  const [programmes, setProgrammes] = useState<import("@/types/index").Programme[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const featured = (programmes ?? []).slice(0, 3);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const { data, error: err } = await listProgrammes({ limit: 6 });
+        if (err) throw new Error(err.message);
+        if (!mounted) return;
+        setProgrammes(data ?? []);
+      } catch (err) {
+        if (!mounted) return;
+        setError(err instanceof Error ? err.message : "Failed to load programmes.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const featured = programmes.slice(0, 3);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <h1 className="text-3xl font-bold mb-6">Eagle's Eye</h1>
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
+          <p className="text-muted-foreground">Loading programmes...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-3xl font-bold mb-6">Eagle&apos;s Eye</h1>
-        <p className="text-destructive mb-6">Unable to load programmes. Please try again later.</p>
+        <h1 className="text-3xl font-bold mb-6">Eagle's Eye</h1>
+        <p className="text-destructive mb-6">
+          Unable to load programmes. Please try again later.
+        </p>
         <Button asChild>
           <Link href="/programmes">Browse Programmes</Link>
         </Button>
@@ -38,15 +75,15 @@ export default async function Landing() {
           </h1>
           <p className="text-lg text-primary/90 mb-8 max-w-2xl mx-auto">
             Find and compare education programmes from top providers. Whether
-            you&apos;re starting a new career or advancing your skills, we help
-            you find the right programme.
+            you're starting a new career or advancing your skills, we help you
+            find the right programme.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="w-full sm:w-auto">
               <Link href="/programmes">Browse programmes</Link>
             </Button>
             <Button variant="outline" asChild size="lg" className="w-full sm:w-auto">
-              <a href="/register">Join as a learner</a>
+              <Link href="/register">Join as a learner</Link>
             </Button>
           </div>
         </div>
@@ -57,7 +94,9 @@ export default async function Landing() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold">Featured programmes</h2>
-              <p className="text-muted-foreground">Popular programmes to get you started</p>
+              <p className="text-muted-foreground">
+                Popular programmes to get you started
+              </p>
             </div>
             <Link
               href="/programmes"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { listProgrammes } from "@/lib/api/programmesApi";
 import type { ProgrammeFilters } from "@/types/index";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/Input";
 
 const CATEGORIES = ["Data & Analytics", "Design", "Engineering", "Marketing"];
 
-export default function ProgrammesPage() {
+function ProgrammesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<ProgrammeFilters>({
@@ -124,5 +124,20 @@ export default function ProgrammesPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function ProgrammesPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
+          <p className="text-muted-foreground">Loading programmes...</p>
+        </div>
+      </div>
+    }>
+      <ProgrammesContent />
+    </Suspense>
   );
 }

@@ -1,34 +1,69 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { getProgramme } from "@/lib/api/programmesApi";
-import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
-export async function generateMetadata({
-  params: _params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  return {
-    title: `Programme | Eagle&apos;s Eye`,
-  };
-}
+type Programme = import("@/types/index").Programme;
 
-export default async function ProgrammeDetailsPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default async function ProgrammeDetailsPage() {
+  const params = await useParams();
+  const router = useRouter();
+  const [programme, setProgramme] = useState<Programme | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const { data, error } = await getProgramme(slug);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const { data, error: err } = await getProgramme(String(params.slug));
+        if (err) throw new Error(err.message);
+        if (!mounted) return;
+        if (!data) {
+          router.push("/programmes");
+          return;
+        }
+        setProgramme(data);
+      } catch (err) {
+        if (!mounted) return;
+        setError(err instanceof Error ? err.message : "Failed to load programme.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [params.slug, router]);
 
-  if (error || !data) {
-    notFound();
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
+          <p className="text-muted-foreground">Loading programme...</p>
+        </div>
+      </div>
+    );
   }
 
-  const prog = data;
+  if (error || !programme) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <p className="text-destructive">{error || "Programme not found."}</p>
+        <Link href="/programmes">
+          <Button>Back to programmes</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const prog = programme;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -55,31 +90,21 @@ export default async function ProgrammeDetailsPage({
 
           <div className="mt-10 grid md:grid-cols-4 gap-4 text-sm text-primary/80">
             <div className="bg-primary/10 p-4 rounded-lg">
-              <div className="text-xs text-primary/60 uppercase tracking-wider">
-                Duration
-              </div>
+              <div className="text-xs text-primary/60 uppercase tracking-wider">Duration</div>
               <div className="font-medium">{prog.duration}</div>
             </div>
             <div className="bg-primary/10 p-4 rounded-lg">
-              <div className="text-xs text-primary/60 uppercase tracking-wider">
-                Mode
-              </div>
+              <div className="text-xs text-primary/60 uppercase tracking-wider">Mode</div>
               <div className="font-medium">{prog.mode}</div>
             </div>
             <div className="bg-primary/10 p-4 rounded-lg">
-              <div className="text-xs text-primary/60 uppercase tracking-wider">
-                Location
-              </div>
+              <div className="text-xs text-primary/60 uppercase tracking-wider">Location</div>
               <div className="font-medium">{prog.location}</div>
             </div>
             <div className="bg-primary/10 p-4 rounded-lg">
-              <div className="text-xs text-primary/60 uppercase tracking-wider">
-                Cost
-              </div>
+              <div className="text-xs text-primary/60 uppercase tracking-wider">Cost</div>
               <div className="font-medium">
-                {prog.cost !== null
-                  ? `${prog.currency} ${prog.cost}`
-                  : "Price on request"}
+                {prog.cost !== null ? `${prog.currency} ${prog.cost}` : "Price on request"}
               </div>
             </div>
           </div>

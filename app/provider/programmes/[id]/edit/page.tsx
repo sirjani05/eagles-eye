@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { Programme } from "@/types/index";
 
-export default function EditProgrammePage() {
+export default async function EditProgrammePage() {
   const router = useRouter();
-  const params = useParams();
+  const params = await useParams();
   const [programme, setProgramme] = useState<Programme | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
