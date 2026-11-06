@@ -1,66 +1,28 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getProgramme } from "@/lib/api/programmesApi";
+import { getMockProgrammeById } from "@/data/mock";
+import { notFound } from "next/navigation";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
-type Programme = import("@/types/index").Programme;
+export const generateStaticParams = async () => {
+  return [
+    { slug: "prog-1" },
+    { slug: "prog-2" },
+    { slug: "prog-3" },
+    { slug: "prog-4" },
+  ];
+};
 
-export default async function ProgrammeDetailsPage() {
-  const params = await useParams();
-  const router = useRouter();
-  const [programme, setProgramme] = useState<Programme | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export default function ProgrammeDetailsPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const programme = getMockProgrammeById(params.slug);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const { data, error: err } = await getProgramme(String(params.slug));
-        if (err) throw new Error(err.message);
-        if (!mounted) return;
-        if (!data) {
-          router.push("/programmes");
-          return;
-        }
-        setProgramme(data);
-      } catch (err) {
-        if (!mounted) return;
-        setError(err instanceof Error ? err.message : "Failed to load programme.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [params.slug, router]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
-          <p className="text-muted-foreground">Loading programme...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !programme) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-destructive">{error || "Programme not found."}</p>
-        <Link href="/programmes">
-          <Button>Back to programmes</Button>
-        </Link>
-      </div>
-    );
+  if (!programme) {
+    notFound();
   }
 
   const prog = programme;

@@ -1,62 +1,24 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getProvider } from "@/lib/api/providersApi";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { getMockProviderById } from "@/data/mock";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 
-type Provider = import("@/types/index").Provider;
+export const generateStaticParams = async () => {
+  return [
+    { id: "prov-1" },
+    { id: "prov-2" },
+    { id: "prov-3" },
+  ];
+};
 
-export default async function ProviderProfilePage() {
-  const params = await useParams();
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export default function ProviderProfilePage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const provider = getMockProviderById(params.id);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const { data, error: err } = await getProvider(String(params.id));
-        if (err) throw new Error(err.message);
-        if (!mounted) return;
-        setProvider(data ?? null);
-      } catch (err) {
-        if (!mounted) return;
-        setError(err instanceof Error ? err.message : "Failed to load provider.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [params.id]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
-          <p className="text-muted-foreground">Loading provider...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !provider) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-destructive">{error || "Provider not found."}</p>
-        <Link href="/programmes">
-          <button className="text-sm font-medium text-primary hover:underline">
-            Back to programmes
-          </button>
-        </Link>
-      </div>
-    );
+  if (!provider) {
+    notFound();
   }
 
   return (

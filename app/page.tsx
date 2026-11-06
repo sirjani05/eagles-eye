@@ -43,7 +43,7 @@ export default function Landing() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-3xl font-bold mb-6">Eagle's Eye</h1>
+        <h1 className="text-3xl font-bold mb-6">Eagle&apos;s Eye</h1>
         <div className="flex flex-col items-center justify-center py-20">
           <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
           <p className="text-muted-foreground">Loading programmes...</p>
@@ -55,7 +55,7 @@ export default function Landing() {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-3xl font-bold mb-6">Eagle's Eye</h1>
+        <h1 className="text-3xl font-bold mb-6">Eagle&apos;s Eye</h1>
         <p className="text-destructive mb-6">
           Unable to load programmes. Please try again later.
         </p>
@@ -75,7 +75,7 @@ export default function Landing() {
           </h1>
           <p className="text-lg text-primary/90 mb-8 max-w-2xl mx-auto">
             Find and compare education programmes from top providers. Whether
-            you're starting a new career or advancing your skills, we help you
+            you&apos;re starting a new career or advancing your skills, we help you
             find the right programme.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

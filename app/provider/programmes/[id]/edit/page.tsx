@@ -1,66 +1,28 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { getProgramme } from "@/lib/api/programmesApi";
+import { getMockProgrammeById } from "@/data/mock";
+import { notFound } from "next/navigation";
 import { ProgrammeForm } from "@/components/programmes/ProgrammeForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import Link from "next/link";
-import type { Programme } from "@/types/index";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 
-export default async function EditProgrammePage() {
-  const router = useRouter();
-  const params = await useParams();
-  const [programme, setProgramme] = useState<Programme | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export const generateStaticParams = async () => {
+  return [
+    { id: "prog-1" },
+    { id: "prog-2" },
+    { id: "prog-3" },
+    { id: "prog-4" },
+  ];
+};
 
-  const fetchProgramme = useCallback(async () => {
-    const id = String(params.id);
-    setLoading(true);
-    try {
-      const { data, error: err } = await getProgramme(id);
-      if (err) throw new Error(err.message);
-      setProgramme(data ?? null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load programme.");
-    } finally {
-      setLoading(false);
-    }
-  }, [params.id]);
+export default function EditProgrammePage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const programme = getMockProgrammeById(params.id);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      await fetchProgramme();
-      if (!mounted) return;
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [fetchProgramme]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="h-8 w-32 bg-muted rounded animate-pulse mb-4" />
-          <p className="text-muted-foreground">Loading programme...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !programme) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-destructive">{error || "Programme not found."}</p>
-        <Link href="/provider/dashboard">
-          <Button>Back to dashboard</Button>
-        </Link>
-      </div>
-    );
+  if (!programme) {
+    notFound();
   }
 
   return (
@@ -73,6 +35,9 @@ export default async function EditProgrammePage() {
               Update details for {programme.title}
             </p>
           </div>
+          <Link href="/provider/dashboard">
+            <Button>Back to dashboard</Button>
+          </Link>
         </div>
       </section>
 
@@ -99,7 +64,7 @@ export default async function EditProgrammePage() {
                 programmeId={programme.id}
                 isEdit
                 onSuccess={() => {
-                  router.push("/provider/dashboard");
+                  // Navigation is handled client-side by the form's router
                 }}
               />
             </CardContent>
