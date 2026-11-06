@@ -1,6 +1,6 @@
 "use client";
 
-import type { Provider, ApiError } from "@/types/index";
+import type { Provider, ApiError, Programme } from "@/types/index";
 
 type ProvidersResult = { data: Provider[] | null; error: ApiError | null };
 type ProviderResult = { data: Provider | null; error: ApiError | null };
@@ -53,8 +53,8 @@ export async function getProvider(id: string): Promise<ProviderResult> {
 }
 
 export async function getProviderProgrammes(
-  providerId: string
-): Promise<{ data: any[] | null; error: ApiError | null }> {
+  _providerId: string
+): Promise<{ data: Programme[] | null; error: ApiError | null }> {
   // TEMPORARY MOCK — replace with GET /providers/:id/programmes
   await new Promise((r) => setTimeout(r, 200));
   return { data: [], error: null };

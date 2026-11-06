@@ -1,6 +1,6 @@
 "use client";
 
-import type { AdminStats, ApiError } from "@/types/index";
+import type { AdminStats, ApiError, Programme } from "@/types/index";
 
 type StatsResult = { data: AdminStats | null; error: ApiError | null };
 
@@ -13,7 +13,7 @@ const MOCK_STATS: AdminStats = {
 };
 
 export async function listPendingProgrammes(): Promise<{
-  data: any[] | null;
+  data: Programme[] | null;
   error: ApiError | null;
 }> {
   // TEMPORARY MOCK — replace with GET /admin/programmes/pending
@@ -25,7 +25,7 @@ export async function reviewProgramme(
   id: string,
   decision: "approved" | "rejected",
   comments?: string
-): Promise<{ data: any | null; error: ApiError | null }> {
+): Promise<{ data: { id: string; decision: string; comments?: string } | null; error: ApiError | null }> {
   // TEMPORARY MOCK — replace with POST /admin/programmes/:id/review
   await new Promise((r) => setTimeout(r, 300));
   return { data: { id, decision, comments }, error: null };

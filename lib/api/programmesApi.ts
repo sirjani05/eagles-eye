@@ -11,7 +11,7 @@ import type {
 type ProgrammesResult = { data: Programme[] | null; error: ApiError | null };
 type ProgrammeResult = { data: Programme | null; error: ApiError | null };
 type BooleanResult = { data: boolean | null; error: ApiError | null };
-type SavedResult = { data: any | null; error: ApiError | null };
+type SaveResult = { data: { id: string; programme_id: string } | null; error: ApiError | null };
 
 // TEMPORARY MOCK — replace with real backend calls once endpoints are confirmed.
 // This block lets the frontend run against real-looking data before the API is ready.
@@ -213,7 +213,7 @@ export async function updateProgramme(
   return { data: updated, error: null };
 }
 
-export async function deleteProgramme(id: string): Promise<BooleanResult> {
+export async function deleteProgramme(_id: string): Promise<BooleanResult> {
   // TEMPORARY MOCK — replace with DELETE /programmes/:id
   await new Promise((r) => setTimeout(r, 300));
   return { data: true, error: null };
@@ -221,14 +221,14 @@ export async function deleteProgramme(id: string): Promise<BooleanResult> {
 
 export async function saveProgramme(
   programmeId: string
-): Promise<SavedResult> {
+): Promise<SaveResult> {
   // TEMPORARY MOCK — replace with POST /programmes/:id/save
   await new Promise((r) => setTimeout(r, 200));
   return { data: { id: "saved-1", programme_id: programmeId }, error: null };
 }
 
 export async function unsaveProgramme(
-  programmeId: string
+  _programmeId: string
 ): Promise<BooleanResult> {
   // TEMPORARY MOCK — replace with DELETE /programmes/:id/save
   await new Promise((r) => setTimeout(r, 200));

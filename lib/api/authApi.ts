@@ -11,11 +11,13 @@ import type {
 
 type AuthResult = { data: User | null; error: ApiError | null };
 
-function toApiError(err: any): ApiError {
+type SupabaseError = Error & { status?: number; code?: string };
+
+function toApiError(err: SupabaseError): ApiError {
   return {
-    message: err?.message ?? "An unexpected error occurred",
-    status: err?.status,
-    code: err?.code,
+    message: err.message ?? "An unexpected error occurred",
+    status: err.status,
+    code: err.code,
   };
 }
 
@@ -67,13 +69,16 @@ export async function getUser(): Promise<AuthResult> {
   return getSession();
 }
 
-function mapUser(u: any): User {
+function mapUser(
+  u: { id: string; email: string; user_metadata?: Record<string, unknown> | null; created_at: string }
+): User {
+  const meta = u.user_metadata ?? {};
   return {
     id: u.id,
     email: u.email,
-    full_name: (u.user_metadata as any)?.full_name ?? null,
-    role: ((u.user_metadata as any)?.role as UserRole) || "learner",
-    avatar_url: (u.user_metadata as any)?.avatar_url ?? null,
+    full_name: (meta.full_name as string | undefined) ?? null,
+    role: ((meta.role as UserRole) || "learner"),
+    avatar_url: (meta.avatar_url as string | undefined) ?? null,
     created_at: u.created_at,
   };
 }
