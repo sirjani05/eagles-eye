@@ -8,6 +8,6 @@ export default function PayloadLayout({ children }: { children: React.ReactNode 
     children,
     config,
     importMap,
-    serverFunction: handleServerFunctions,
+    serverFunction: handleServerFunctions as never,
   });
 }

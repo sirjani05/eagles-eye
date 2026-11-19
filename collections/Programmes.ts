@@ -1,8 +1,10 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, AccessResult, Where } from "payload";
 import { revalidateTag } from "next/cache";
 
 const isAdmin = (user: { collection?: string } | null | undefined) =>
   user?.collection === "admins";
+
+type ProgrammeAccessUser = { collection?: string; id?: string; accountType?: string };
 
 export const Programmes: CollectionConfig = {
   slug: "programmes",
@@ -12,16 +14,17 @@ export const Programmes: CollectionConfig = {
   },
   access: {
     read: ({ req }) => {
-      if (isAdmin(req.user)) return true;
-      if (req.user?.collection === "users") {
+      const user = req.user as ProgrammeAccessUser | null | undefined;
+      if (isAdmin(user)) return true;
+      if (user?.collection === "users") {
         return {
           or: [
             { status: { equals: "published" } },
-            { "provider.owner": { equals: req.user.id } },
+            { "provider.owner": { equals: user.id } },
           ],
-        };
+        } as Where;
       }
-      return { status: { equals: "published" } };
+      return { status: { equals: "published" } } as Where;
     },
     create: ({ req }) =>
       isAdmin(req.user) ||

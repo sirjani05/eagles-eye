@@ -73,9 +73,9 @@ export function ProgrammeCard({ programme, onCompareToggle, isCompared = false, 
       </Link>
       <CardFooter className="pt-2 border-t border-border/50">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-foreground">
-            {formatCost(programme.cost, programme.currency)}
-          </span>
+<span className="text-sm font-semibold text-foreground">
+              {formatCost(programme.cost ?? null, programme.currency ?? null)}
+            </span>
           {programme.provider && (
             <span className="text-xs text-foreground-muted truncate max-w-[120px]">
               {programme.provider.name}

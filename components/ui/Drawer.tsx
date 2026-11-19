@@ -105,10 +105,12 @@ export function DrawerWithAnimations({ isOpen, onClose, title, description, chil
   if (!isOpen) return null;
 
   React.useEffect(() => {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = slideIn;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   return (

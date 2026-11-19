@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { Suspense, useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { listProgrammes } from "@/lib/api/programmesApi";
 import type { Programme, ProgrammeFilters } from "@/types/index";
 import { ProgrammeCard, ProgrammeCardSkeleton } from "@/components/programmes/ProgrammeCard";
@@ -11,11 +12,9 @@ import { Select } from "@/components/ui/Select";
 import { Slider } from "@/components/ui/Slider";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Badge } from "@/components/ui/Badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Drawer } from "@/components/ui/Drawer";
 import {
-  Search, Filter, X, ChevronDown, ChevronUp, Scale, BookOpen, Globe, Zap, Sparkles,
-  ArrowRight, Minus, Plus
+  Search, Filter, X, Scale, BookOpen, Globe, Zap, Sparkles, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 const CATEGORIES = ["Data & Analytics", "Design", "Engineering", "Marketing"];
@@ -28,7 +27,36 @@ const MODES = [
 
 const MAX_COMPARE = 4;
 
+function ProgrammesLoading() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <header className="sticky top-0 z-50 glass border-b border-border">
+        <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="h-8 w-24 bg-surface rounded animate-pulse" />
+          <div className="h-8 w-24 bg-surface rounded animate-pulse" />
+        </nav>
+      </header>
+      <main className="flex-1 container mx-auto px-4 py-12">
+        <div className="space-y-8">
+          <div className="h-8 w-48 bg-surface rounded animate-pulse" />
+          <div className="grid md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => <ProgrammeCardSkeleton key={i} />)}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 export default function ProgrammesPage() {
+  return (
+    <Suspense fallback={<ProgrammesLoading />}>
+      <ProgrammesContent />
+    </Suspense>
+  );
+}
+
+function ProgrammesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -47,7 +75,6 @@ export default function ProgrammesPage() {
   const [page, setPage] = useState(1);
   const [compareList, setCompareList] = useState<Programme[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [showActiveFilters, setShowActiveFilters] = useState(false);
 
   const limit = 12;
 
@@ -115,30 +142,13 @@ export default function ProgrammesPage() {
     if (filters.category) count++;
     if (filters.level) count++;
     if (filters.mode) count++;
-    if (filters.min_cost) count++;
-    if (filters.max_cost) count++;
+    if (filters.min_cost !== undefined) count++;
+    if (filters.max_cost !== undefined) count++;
     return count;
   }, [filters]);
 
   if (loading && programmes.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <header className="sticky top-0 z-50 glass border-b border-border">
-          <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="h-8 w-24 bg-surface rounded animate-pulse" />
-            <div className="h-8 w-24 bg-surface rounded animate-pulse" />
-          </nav>
-        </header>
-        <main className="flex-1 container mx-auto px-4 py-12">
-          <div className="space-y-8">
-            <div className="h-8 w-48 bg-surface rounded animate-pulse" />
-            <div className="grid md:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => <ProgrammeCardSkeleton key={i} />)}
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return <ProgrammesLoading />;
   }
 
   return (
@@ -152,7 +162,7 @@ export default function ProgrammesPage() {
               <path d="M2 12l10 5 10-5" />
               <circle cx="12" cy="12" r="3" />
             </svg>
-            <span>Eagle's Eye</span>
+            <span>Eagle&apos;s Eye</span>
           </Link>
           <div className="hidden md:flex items-center gap-2">
             <Link href="/compare" className="text-sm font-medium text-foreground/70 hover:text-foreground">
@@ -202,7 +212,7 @@ export default function ProgrammesPage() {
               <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label="Active filters">
                 {filters.search && (
                   <Badge variant="outline" className="gap-1" onClick={() => updateFilters({ search: undefined })}>
-                    <Search className="h-3 w-3" /> "{filters.search}" <X className="h-3 w-3" />
+                    <Search className="h-3 w-3" /> &quot;{filters.search}&quot; <X className="h-3 w-3" />
                   </Badge>
                 )}
                 {filters.category && (
@@ -220,10 +230,10 @@ export default function ProgrammesPage() {
                     <Globe className="h-3 w-3" /> {filters.mode} <X className="h-3 w-3" />
                   </Badge>
                 )}
-                {(filters.min_cost || filters.max_cost) && (
+                {(filters.min_cost !== undefined || filters.max_cost !== undefined) && (
                   <Badge variant="outline" className="gap-1" onClick={() => updateFilters({ min_cost: undefined, max_cost: undefined })}>
                     <Sparkles className="h-3 w-3" />
-                    £{filters.min_cost || 0}–£{filters.max_cost || "∞"} <X className="h-3 w-3" />
+                    £{filters.min_cost ?? 0}–£{filters.max_cost ?? "∞"} <X className="h-3 w-3" />
                   </Badge>
                 )}
               </div>
@@ -259,7 +269,8 @@ export default function ProgrammesPage() {
                   value={filters.mode || ""}
                   onChange={(e) => updateFilters({ mode: e.target.value || undefined })}
                 />
-</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -405,15 +416,35 @@ export default function ProgrammesPage() {
         <div>
           <h3 className="font-semibold mb-3">Tuition Range (GBP)</h3>
           <Slider
+            label="Minimum tuition"
             min={0}
             max={5000}
             step={100}
-            defaultValue={[filters.min_cost || 0, filters.max_cost || 5000]}
+            value={filters.min_cost ?? 0}
             showValue
             valueLabel={(v) => `£${v.toLocaleString()}`}
             onChange={(e) => {
-              const [min, max] = e.target.value.split(",").map(Number);
-              updateFilters({ min_cost: min || undefined, max_cost: max === 5000 ? undefined : max });
+              const min = Number(e.target.value);
+              updateFilters({
+                min_cost: min || undefined,
+                ...(filters.max_cost !== undefined && min > filters.max_cost ? { max_cost: min } : {}),
+              });
+            }}
+          />
+          <Slider
+            label="Maximum tuition"
+            min={0}
+            max={5000}
+            step={100}
+            value={filters.max_cost ?? 5000}
+            showValue
+            valueLabel={(v) => `£${v.toLocaleString()}`}
+            onChange={(e) => {
+              const max = Number(e.target.value);
+              updateFilters({
+                max_cost: max === 5000 ? undefined : max,
+                ...(filters.min_cost !== undefined && max < filters.min_cost ? { min_cost: max } : {}),
+              });
             }}
           />
         </div>
@@ -460,3 +491,4 @@ export default function ProgrammesPage() {
     )}
   </div>
 );
+}

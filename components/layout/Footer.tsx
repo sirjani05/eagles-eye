@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Mail, Globe, Shield, Users, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -32,7 +32,7 @@ const FOOTER_LINKS = {
   ],
 };
 
-export function Footer() {
+export function Footer({ currentYear }: { currentYear: number }) {
   const [email, setEmail] = React.useState("");
   const [subscribed, setSubscribed] = React.useState(false);
   const [currency, setCurrency] = React.useState("GBP");
@@ -58,7 +58,7 @@ export function Footer() {
                 <path d="M2 12l10 5 10-5" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
-              <span>Eagle's Eye</span>
+              <span>Eagle&apos;s Eye</span>
             </Link>
             <p className="text-foreground-muted text-sm mb-6 max-w-xs">
               The definitive platform for discovering, comparing, and applying to education programmes worldwide.
@@ -137,7 +137,7 @@ export function Footer() {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-sm text-foreground-subtle">
-              &copy; {new Date().getFullYear()} Eagle's Eye. All rights reserved.
+              &copy; {currentYear} Eagle&apos;s Eye. All rights reserved.
             </p>
 
             <div className="flex items-center gap-4">

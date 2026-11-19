@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+The Payload backend requires a PostgreSQL database and the `PAYLOAD_SECRET` and
+`DATABASE_URL` environment variables. Copy `.env.example` to `.env.local`, replace
+the placeholder secret with a random value, and set `DATABASE_URL` to your
+PostgreSQL connection string before starting the dev server. Do not commit
+`.env.local`.
+
 First, run the development server:
 
 ```bash
@@ -16,7 +22,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit it.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
