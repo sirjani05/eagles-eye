@@ -71,27 +71,17 @@ const programmes = [
 ];
 
 function richText(text: string) {
-  return {
-    root: {
-      type: "root",
-      version: 1,
-      direction: "ltr",
-      format: "",
-      indent: 0,
+  return [
+    {
       children: [
         {
-          type: "paragraph",
-          version: 1,
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          children: [
-            { type: "text", version: 1, text, detail: 0, format: 0, mode: "normal", style: "" },
-          ],
+          text,
+          type: "text",
         },
       ],
+      type: "paragraph",
     },
-  };
+  ];
 }
 
 async function upsertBySlug(

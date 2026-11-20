@@ -91,7 +91,25 @@ export const Programmes: CollectionConfig = {
     { name: "title", type: "text", required: true, maxLength: 180 },
     { name: "slug", type: "text", required: true, unique: true, index: true },
     { name: "summary", type: "textarea", required: true, maxLength: 500 },
-    { name: "fullDescription", type: "richText", required: true },
+    {
+      name: "fullDescription",
+      type: "array",
+      required: true,
+      fields: [
+        {
+          name: "children",
+          type: "array",
+          required: true,
+          fields: [
+            {
+              name: "text",
+              type: "text",
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
     {
       name: "provider",
       type: "relationship",

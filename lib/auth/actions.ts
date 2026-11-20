@@ -47,7 +47,7 @@ async function setAuthCookie(token: string) {
     returnCookieAsObject: true,
   });
   const cookieStore = await cookies();
-  cookieStore.set(cookie.name, cookie.value, {
+  cookieStore.set(cookie.name, cookie.value ?? "", {
     domain: cookie.domain,
     expires: cookie.expires ? new Date(cookie.expires) : undefined,
     httpOnly: cookie.httpOnly,

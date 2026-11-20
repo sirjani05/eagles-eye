@@ -2,27 +2,37 @@
 
 import * as React from "react";
 
-interface SliderProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   label?: string;
   min?: number;
   max?: number;
   step?: number;
   showValue?: boolean;
   valueLabel?: (value: number) => string;
+  value?: number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
-  ({ className, label, min = 0, max = 100, step = 1, showValue = false, valueLabel, id, ...props }, ref) => {
+  ({ className, label, min = 0, max = 100, step = 1, showValue = false, valueLabel, id, value, onChange, ...props }, ref) => {
     const sliderId = id || React.useId();
-    const [value, setValue] = React.useState<number>(Number(props.value ?? props.defaultValue ?? min));
+    const [internalValue, setInternalValue] = React.useState<number>(
+      Number(value ?? props.defaultValue ?? min)
+    );
+
+    React.useEffect(() => {
+      if (value !== undefined) {
+        setInternalValue(Number(value));
+      }
+    }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = Number(e.target.value);
-      setValue(newValue);
-      props.onChange?.(e);
+      setInternalValue(newValue);
+      onChange?.(e);
     };
 
-    const percentage = ((value - min) / (max - min)) * 100;
+    const percentage = ((internalValue - min) / (max - min)) * 100;
 
     return (
       <div className="w-full space-y-1.5">
@@ -33,7 +43,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             </label>
             {showValue && (
               <span className="text-sm font-mono text-primary">
-                {valueLabel ? valueLabel(value) : value}
+                {valueLabel ? valueLabel(internalValue) : internalValue}
               </span>
             )}
           </div>

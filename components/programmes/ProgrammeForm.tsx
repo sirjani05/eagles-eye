@@ -5,6 +5,7 @@ import { createProgramme, updateProgramme, deleteProgramme } from "@/lib/api/pro
 import type { ProgrammeCreateInput, ProgrammeUpdateInput } from "@/types/index";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import Link from "next/link";
 
 const MODES = [
@@ -189,9 +190,8 @@ export function ProgrammeForm({
           onChange={(e) => handleChange("location", e.target.value)}
         />
       </div>
-      <Input
+      <Textarea
         label="Description"
-        as="textarea"
         rows={4}
         placeholder="Describe the programme..."
         value={form.description}
