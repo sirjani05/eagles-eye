@@ -15,7 +15,8 @@ interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 
 
 const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
   ({ className, label, min = 0, max = 100, step = 1, showValue = false, valueLabel, id, value, onChange, ...props }, ref) => {
-    const sliderId = id || React.useId();
+    const generatedId = React.useId();
+    const sliderId = id ?? generatedId;
     const [internalValue, setInternalValue] = React.useState<number>(
       Number(value ?? props.defaultValue ?? min)
     );

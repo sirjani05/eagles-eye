@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, type LucideIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button } from "./Button";
 

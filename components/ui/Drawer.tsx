@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { X, type LucideIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { createPortal } from "react-dom";
-import { Button } from "./Button";
 
 type DrawerSide = "left" | "right";
 
@@ -102,18 +101,21 @@ const slideIn = `
 `;
 
 export function DrawerWithAnimations({ isOpen, onClose, title, description, children, side = "right", size = "md", showClose = true }: DrawerProps) {
-  if (!isOpen) return null;
-
   React.useEffect(() => {
+    if (!isOpen) return;
     const style = document.createElement("style");
     style.textContent = slideIn;
     document.head.appendChild(style);
     return () => {
       document.head.removeChild(style);
     };
-  }, []);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} title={title} description={description} children={children} side={side} size={size} showClose={showClose} />
+    <Drawer isOpen={isOpen} onClose={onClose} title={title} description={description} side={side} size={size} showClose={showClose}>
+      {children}
+    </Drawer>
   );
 }

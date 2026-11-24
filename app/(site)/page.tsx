@@ -189,8 +189,8 @@ export default function Landing() {
       <section className="py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Why Eagle's Eye?</h2>
-            <p className="text-foreground-muted text-lg">We're building the most transparent education marketplace</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Why Eagle&apos;s Eye?</h2>
+            <p className="text-foreground-muted text-lg">We&apos;re building the most transparent education marketplace</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -229,7 +229,7 @@ export default function Landing() {
         <div className="container mx-auto max-w-2xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">Ready to find your programme?</h2>
           <p className="text-foreground-muted mb-10">
-            Join thousands of learners who found their path with Eagle's Eye.
+            Join thousands of learners who found their path with Eagle&apos;s Eye.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/programmes">

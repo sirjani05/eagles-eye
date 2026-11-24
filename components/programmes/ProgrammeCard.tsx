@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/Card";
 import type { Programme } from "@/types/index";
-import { Check, CheckCircle2, Plus } from "lucide-react";
+import { CheckCircle2, Plus } from "lucide-react";
 
 interface ProgrammeCardProps {
   programme: Programme;

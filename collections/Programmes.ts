@@ -1,4 +1,4 @@
-import type { CollectionConfig, AccessResult, Where } from "payload";
+import type { CollectionConfig, Where } from "payload";
 import { revalidateTag } from "next/cache";
 
 const isAdmin = (user: { collection?: string } | null | undefined) =>

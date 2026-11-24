@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthProvider";
-import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Drawer } from "@/components/ui/Drawer";
 
@@ -89,7 +89,7 @@ export function Navbar() {
             <path d="M2 12l10 5 10-5" />
             <circle cx="12" cy="12" r="3" />
           </svg>
-          <span>Eagle's Eye</span>
+          <span>Eagle&apos;s Eye</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
