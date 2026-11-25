@@ -2,11 +2,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-The Payload backend requires a PostgreSQL database and the `PAYLOAD_SECRET` and
-`DATABASE_URL` environment variables. Copy `.env.example` to `.env.local`, replace
-the placeholder secret with a random value, and set `DATABASE_URL` to your
-PostgreSQL connection string before starting the dev server. Do not commit
-`.env.local`.
+Payload uses PostgreSQL for application content and requires `PAYLOAD_SECRET`
+and `DATABASE_URL`. Email/password authentication uses Supabase; set
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from your
+Supabase project. Copy `.env.example` to `.env.local`, replace all placeholders,
+and do not commit `.env.local`.
 
 First, run the development server:
 

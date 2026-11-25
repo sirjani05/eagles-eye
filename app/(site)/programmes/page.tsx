@@ -165,7 +165,10 @@ function ProgrammesContent() {
             <span>Eagle&apos;s Eye</span>
           </Link>
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/compare" className="text-sm font-medium text-foreground/70 hover:text-foreground">
+            <Link
+              href={`/compare?ids=${encodeURIComponent(compareList.map((programme) => programme.id).join(","))}`}
+              className="text-sm font-medium text-foreground/70 hover:text-foreground"
+            >
               <Scale className="h-4 w-4 mr-1" />
               Compare ({compareList.length}/{MAX_COMPARE})
             </Link>
@@ -479,7 +482,7 @@ function ProgrammesContent() {
             <span className="text-sm text-foreground-muted">
               {compareList.length}/{MAX_COMPARE} selected
             </span>
-            <Link href="/compare">
+            <Link href={`/compare?ids=${encodeURIComponent(compareList.map((programme) => programme.id).join(","))}`}>
               <Button size="sm" disabled={compareList.length < 2}>
                 <Scale className="h-4 w-4 mr-1" />
                 Compare
