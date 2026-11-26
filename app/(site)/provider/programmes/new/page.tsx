@@ -1,12 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { ProgrammeForm } from "@/components/programmes/ProgrammeForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 
 export default function NewProgrammePage() {
-  const router = useRouter();
-
   return (
     <div className="min-h-screen flex flex-col">
       <section className="border-b px-4 py-6 bg-background/50 backdrop-blur sticky top-0 z-20">
@@ -27,11 +24,7 @@ export default function NewProgrammePage() {
               <CardTitle>Programme details</CardTitle>
             </CardHeader>
             <CardContent>
-              <ProgrammeForm
-                onSuccess={() => {
-                  router.push("/provider/dashboard");
-                }}
-              />
+              <ProgrammeForm redirectPath="/provider/dashboard" />
             </CardContent>
           </Card>
         </div>

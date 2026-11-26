@@ -10,12 +10,13 @@ export const generateStaticParams = async () => {
   ];
 };
 
-export default function ProviderProfilePage({
+export default async function ProviderProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const provider = getMockProviderById(params.id);
+  const { id } = await params;
+  const provider = getMockProviderById(id);
 
   if (!provider) {
     notFound();

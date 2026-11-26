@@ -31,35 +31,35 @@ function CompareContent() {
     let cancelled = false;
 
     if (ids.length === 0) {
-      setProgrammes([]);
-      setError("");
-      setLoading(false);
       return () => {
         cancelled = true;
       };
     }
 
-    setLoading(true);
-    setError("");
-    Promise.all(
-      ids.map(async (id) => {
-        const { data, error: fetchError } = await getProgramme(id);
-        if (fetchError) throw new Error(fetchError.message);
-        if (!data) throw new Error(`Could not find programme ${id}.`);
-        return data;
-      }),
-    )
-      .then((data) => {
-        if (!cancelled) setProgrammes(data);
-      })
-      .catch((fetchError: unknown) => {
-        if (!cancelled) {
-          setError(fetchError instanceof Error ? fetchError.message : "Unable to load selected programmes.");
-        }
-      })
-      .finally(() => {
+    const fetchProgrammes = async () => {
+      setProgrammes([]);
+      setLoading(true);
+      setError("");
+      try {
+        const results = await Promise.all(
+          ids.map(async (id) => {
+            const { data, error: err } = await getProgramme(id);
+            if (err) throw new Error(err.message);
+            return data;
+          }),
+        );
+        if (cancelled) return;
+        setProgrammes(results.filter((p): p is Programme => p !== null));
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Failed to load programmes.");
+        setProgrammes([]);
+      } finally {
         if (!cancelled) setLoading(false);
-      });
+      }
+    };
+
+    fetchProgrammes();
 
     return () => {
       cancelled = true;

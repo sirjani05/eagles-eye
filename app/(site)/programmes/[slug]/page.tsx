@@ -14,12 +14,13 @@ export const generateStaticParams = async () => {
   ];
 };
 
-export default function ProgrammeDetailsPage({
+export default async function ProgrammeDetailsPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const programme = getMockProgrammeById(params.slug);
+  const { slug } = await params;
+  const programme = getMockProgrammeById(slug);
 
   if (!programme) {
     notFound();

@@ -14,12 +14,13 @@ export const generateStaticParams = async () => {
   ];
 };
 
-export default function EditProgrammePage({
+export default async function EditProgrammePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const programme = getMockProgrammeById(params.id);
+  const { id } = await params;
+  const programme = getMockProgrammeById(id);
 
   if (!programme) {
     notFound();
@@ -63,9 +64,7 @@ export default function EditProgrammePage({
                 }}
                 programmeId={programme.id}
                 isEdit
-                onSuccess={() => {
-                  // Navigation is handled client-side by the form's router
-                }}
+                redirectPath="/provider/dashboard"
               />
             </CardContent>
           </Card>

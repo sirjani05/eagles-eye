@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createProgramme, updateProgramme, deleteProgramme } from "@/lib/api/programmesApi";
 import type { ProgrammeCreateInput, ProgrammeUpdateInput } from "@/types/index";
 import { Button } from "@/components/ui/Button";
@@ -29,17 +30,18 @@ interface ProgrammeFormProps {
     mode?: string;
     status?: string;
   };
-  onSuccess: () => void;
+  redirectPath?: string;
   isEdit?: boolean;
   programmeId?: string;
 }
 
 export function ProgrammeForm({
   initial,
-  onSuccess,
+  redirectPath = "/provider/dashboard",
   isEdit = false,
   programmeId,
 }: ProgrammeFormProps) {
+  const router = useRouter();
   const [form, setForm] = useState({
     title: initial?.title ?? "",
     description: initial?.description ?? "",
@@ -95,7 +97,7 @@ export function ProgrammeForm({
         const { error: err } = await createProgramme(input);
         if (err) throw new Error(err.message);
       }
-      onSuccess();
+      router.push(redirectPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save programme.");
     } finally {
@@ -109,7 +111,7 @@ export function ProgrammeForm({
     try {
       const { error: err } = await deleteProgramme(programmeId);
       if (err) throw new Error(err.message);
-      onSuccess();
+      router.push(redirectPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete programme.");
     }
