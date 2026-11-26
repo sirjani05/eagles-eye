@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthProvider";
+import { useCurrency } from "./CurrencyProvider";
 import { Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Drawer } from "@/components/ui/Drawer";
@@ -33,15 +34,21 @@ const ADMIN_LINKS = [
 
 export function Navbar() {
   const { user, logout, loading } = useAuth();
+  const { currency, setCurrency, supported } = useCurrency();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
+  const [currencyMenuOpen, setCurrencyMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef<HTMLDivElement>(null);
+  const currencyMenuRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
+      }
+      if (currencyMenuRef.current && !currencyMenuRef.current.contains(event.target as Node)) {
+        setCurrencyMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -114,10 +121,39 @@ export function Navbar() {
 
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="gap-1" aria-label="Toggle currency">
-              <span className="text-sm font-medium">GBP</span>
-              <ChevronDown className="h-3.5 w-3.5" />
-            </Button>
+            <div className="relative" ref={currencyMenuRef}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1"
+                aria-label="Toggle currency"
+                aria-expanded={currencyMenuOpen}
+                aria-haspopup="true"
+                onClick={() => setCurrencyMenuOpen((v) => !v)}
+              >
+                <span className="text-sm font-medium">{currency}</span>
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+              {currencyMenuOpen && (
+                <div className="absolute right-0 mt-2 w-40 glass-strong rounded-xl border border-border py-2 shadow-lg animate-scale-in" role="menu">
+                  {supported.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => {
+                        setCurrency(c);
+                        setCurrencyMenuOpen(false);
+                      }}
+                      className={`flex items-center gap-2 w-full px-4 py-2 text-sm text-left hover:bg-surface transition-colors ${
+                        c === currency ? "text-primary font-semibold" : "text-foreground/70"
+                      }`}
+                      role="menuitem"
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="hidden md:flex items-center gap-2">

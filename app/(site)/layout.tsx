@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { AuthProvider } from "@/components/layout/AuthProvider";
+import { CurrencyProvider } from "@/components/layout/CurrencyProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -32,9 +33,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <AuthProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer currentYear={currentYear} />
+          <CurrencyProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer currentYear={currentYear} />
+          </CurrencyProvider>
         </AuthProvider>
       </body>
     </html>

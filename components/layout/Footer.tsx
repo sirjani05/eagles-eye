@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useCurrency, CURRENCY_SYMBOLS, type Currency } from "./CurrencyProvider";
 
 const FOOTER_LINKS = {
   product: [
@@ -35,7 +36,7 @@ const FOOTER_LINKS = {
 export function Footer({ currentYear }: { currentYear: number }) {
   const [email, setEmail] = React.useState("");
   const [subscribed, setSubscribed] = React.useState(false);
-  const [currency, setCurrency] = React.useState("GBP");
+  const { currency, setCurrency, supported } = useCurrency();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,13 +147,15 @@ export function Footer({ currentYear }: { currentYear: number }) {
                 <div className="relative">
                   <select
                     value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
+                    onChange={(e) => setCurrency(e.target.value as Currency)}
                     className="appearance-none bg-surface border border-border rounded-lg px-3 py-1.5 text-sm text-foreground pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label="Select currency"
                   >
-                    <option value="GBP">GBP (£)</option>
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
+                    {supported.map((c) => (
+                      <option key={c} value={c}>
+                        {c} ({CURRENCY_SYMBOLS[c]})
+                      </option>
+                    ))}
                   </select>
                   <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground-subtle pointer-events-none" />
                 </div>
